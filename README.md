@@ -37,8 +37,29 @@ In the appropriate packages create the following:
 
    private String name;
 ```   
-## 
-    
+## Create the Dao
+  * Create an **interface** named **PersonDao.java**
+  * Add the following sql/java code:
+```
+@Insert
+void insertPerson(Person person);
+
+@Query("SELECT * FROM Person")
+List<Person> getAllPersons();
+ ```
+ 
+ ## Create the Database class
+   * Create an **abstract** class called **LabDatabase.java**
+   * Edit the code to the following:
+```
+@Database(entities = {Person.class}, version = 1)
+public abstract class LabDatabase extends RoomDatabase {
+
+    public abstract PersonDao personDao();
+}
+```
+## Create the layout files:
+  *  Create an **activity_persons.xml** and place a ListView as the only View element (Refer to Lab 3 if you must)
 ```xml
 <ListView
     ...
@@ -47,5 +68,57 @@ In the appropriate packages create the following:
     android:padding="45sp">
 </ListView>
 ```
+  * In **activity_main.xml** add an EditText and two buttons. One button to submit the name and one to list all names.
+  * In **MainActivity.java** create OnClickListeners() to each button. Create Toast messages to ensure these work. Have the button that submits the name echo the name from the EditText in the Toast message.
+  
+## Create the other Java files in appropriate packages
+  * Create a **PersonsActivity.java** file and the following code inside the onCreate(). (This should seem familiar from Lab 3)
+  ```
+  setContentView(R.layout.activity_persons);
+
+  listView = findViewById(R.id.personName);
+
+  ArrayList<String> i = (ArrayList) this.getIntent().getExtras().get("Persons");
+
+  ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, i);
+
+  listView.setAdapter(adapter);
+  ```
+   * Create two classes that extend **AsyncTask**. One for each database call. I would not normally call AsyncTask for transactions I was not expecting anything back, so feel free to use standard Java Thread for the **insert**
+ ```
+ new Thread(new Runnable() {
+     @Override
+     public void run() {
+         Person person =new Person();
+         person.setName(name);
+         labDatabase.personDao().insertPerson(person);
+     }
+ }) .start();
+```
+## Instantiate a Database
+  * In the **MainActivity.java** file, instantiate a LabDatabase object in the onCreate() as follows:
+```
+labDB = Room.databaseBuilder(this, LabDatabase.class, DATABASE_NAME)
+                .build();
+```
+**NOTE: labDB will be declared outside of onCreate()
+
+## Perform the database functions in the doInBackground() methods as follows:
+  * In the insert task: 
+```
+database.personDao().insertPerson(person);
+```
+  * In the retrieval task:
+```
+ArrayList<String> personNames = new ArrayList<>();
+for(Person p: persons) {
+    personNames.add(p.getName());
+}
+
+Intent i = new Intent(context, PersonsActivity.class);
+i.putExtra("Persons", personNames);
+context.startActivity(i);
+```
+
 * Test your code one final time.
 * Share, commit, and push lab to your GitHub account
