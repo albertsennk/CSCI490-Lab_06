@@ -101,7 +101,7 @@ public abstract class LabDatabase extends RoomDatabase {
 labDB = Room.databaseBuilder(this, LabDatabase.class, DATABASE_NAME)
                 .build();
 ```
-**NOTE: labDB will be declared outside of onCreate()
+**NOTE: labDB will be declared outside of onCreate()**
 
 ## Perform the database functions in the doInBackground() methods as follows:
   * In the insert task: 
