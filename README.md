@@ -1,4 +1,4 @@
-# CSCI490-Lab_5
+# CSCI490-Lab_06
 
 Android comes standard with an SQLite relational database, however working with the common libraries surrounding this can be quite cumbersome with lots of boilerplate code to write. Android developers are currently working on an improved API and abstraction layer that makes sending data in and out of the SQLite database "easy". 
 
